@@ -7,20 +7,20 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable
 
 
 abstract class ReactiveFragment : Fragment() {
-    lateinit var viewModel: ViewModel
-    val disposables = CompositeDisposable()
+  lateinit var viewModel: ViewModel
+  val disposables = CompositeDisposable()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        initViewModel()
-        initSubs()
-    }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    initViewModel()
+    initSubs()
+  }
 
-    override fun onDestroy() {
-        disposables.clear()
-        super.onDestroy()
-    }
+  override fun onDestroy() {
+    disposables.clear()
+    super.onDestroy()
+  }
 
-    abstract fun initSubs()
-    abstract fun initViewModel()
+  abstract fun initSubs()
+  abstract fun initViewModel()
 }

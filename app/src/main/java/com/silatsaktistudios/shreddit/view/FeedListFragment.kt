@@ -14,65 +14,67 @@ import kotlinx.android.synthetic.main.fragment_feed_list.*
 
 class FeedListFragment : ReactiveFragment() {
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_feed_list, container, false)
+  override fun onCreateView(
+    inflater: LayoutInflater, container: ViewGroup?,
+    savedInstanceState: Bundle?
+  ): View? {
+    val view = inflater.inflate(R.layout.fragment_feed_list, container, false)
 
-        initSubs()
-        (viewModel as? FeedListViewModel)?.getRedditFeed()
+    initSubs()
+    (viewModel as? FeedListViewModel)?.getRedditFeed()
 
-        return view
+    return view
+  }
+
+
+  override fun initSubs() {
+    (viewModel as? FeedListViewModel)?.let { it ->
+      disposables.addAll(
+        it.uiState
+          .subscribeOn(Schedulers.newThread())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(
+            { state ->
+              when (state) {
+                FeedListViewModel.UiState.GETTING_LIST -> {
+                }
+                FeedListViewModel.UiState.FAILED_TO_GET_LIST -> displayRetryListRetrievalDialog()
+                FeedListViewModel.UiState.LIST_OBTAINED -> {
+                }
+                else -> {
+                }
+              }
+
+            },
+            {
+              displayRetryListRetrievalDialog(it)
+            }
+          ),
+        it.dataState
+          .subscribeOn(Schedulers.newThread())
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(
+            {
+              reddit_feed_list.adapter = FeedListAdapter(it.data.children)
+            },
+            {
+
+            }
+          )
+      )
     }
+  }
 
+  override fun initViewModel() {
+    viewModel = ViewModelProvider(
+      viewModelStore,
+      ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+    ).get(FeedListViewModel::class.java)
+  }
 
-
-    override fun initSubs() {
-        (viewModel as? FeedListViewModel)?.let { it ->
-            disposables.addAll(
-                it.uiState
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { state ->
-                            when (state) {
-                                FeedListViewModel.UiState.GETTING_LIST -> {}
-                                FeedListViewModel.UiState.FAILED_TO_GET_LIST -> displayRetryListRetrievalDialog()
-                                FeedListViewModel.UiState.LIST_OBTAINED -> {}
-                                else -> {}
-                            }
-
-                        },
-                        {
-                            displayRetryListRetrievalDialog(it)
-                        }
-                    ),
-                it.dataState
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        {
-                            reddit_feed_list.adapter = FeedListAdapter(it.data.children)
-                        },
-                        {
-
-                        }
-                    )
-            )
-        }
-    }
-
-    override fun initViewModel() {
-        viewModel = ViewModelProvider(
-            viewModelStore,
-            ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
-        ).get(FeedListViewModel::class.java)
-    }
-
-    private fun displayRetryListRetrievalDialog(throwable: Throwable? = null) {
-        throwable?.let {  }
-    }
+  private fun displayRetryListRetrievalDialog(throwable: Throwable? = null) {
+    throwable?.let { }
+  }
 
 //    companion object {
 //        @JvmStatic
