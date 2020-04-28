@@ -106,7 +106,7 @@ class FeedListFragment : ReactiveFragment(), SwipeRefreshLayout.OnRefreshListene
     AlertDialog.Builder(requireContext())
       .setTitle("Could Not Connect")
       .setCancelable(false)
-      .setIcon(android.R.drawable.ic_dialog_alert)
+      .setIcon(R.drawable.ic_error_outline_black_24dp)
       .setNegativeButton("Quit") { _: DialogInterface, _: Int ->
         requireActivity().finish()
       }
