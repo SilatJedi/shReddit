@@ -149,7 +149,7 @@ data class AllAwarding(
     val name: String,
     val penny_donate: Any,
     val penny_price: Any,
-    val resized_icons: List<ResizedIcon>,
+    val resized_icons: List<Source>,
     val start_date: Any,
     val subreddit_coin_reward: Int,
     val subreddit_id: Any
@@ -300,12 +300,6 @@ data class SecureMediaEmbedX(
     val width: Int
 )
 
-data class ResizedIcon(
-    val height: Int,
-    val url: String,
-    val width: Int
-)
-
 data class Awarding(
     val award_sub_type: String,
     val award_type: String,
@@ -327,33 +321,18 @@ data class Awarding(
     val name: String,
     val penny_donate: Any,
     val penny_price: Any,
-    val resized_icons: List<ResizedIconX>,
+    val resized_icons: List<Source>,
     val start_date: Any,
     val subreddit_coin_reward: Int,
     val subreddit_id: Any
-)
-
-class Gildings(
 )
 
 data class Media(
     val reddit_video: RedditVideo
 )
 
-class MediaEmbed(
-)
-
 data class SecureMedia(
     val reddit_video: RedditVideoX
-)
-
-class SecureMediaEmbed(
-)
-
-data class ResizedIconX(
-    val height: Int,
-    val url: String,
-    val width: Int
 )
 
 data class RedditVideo(
@@ -382,7 +361,7 @@ data class RedditVideoX(
 
 data class Image(
     val id: String,
-    val resolutions: List<Resolution>,
+    val resolutions: List<Source>,
     val source: Source,
     val variants: Variants
 )
@@ -399,12 +378,6 @@ data class RedditVideoPreview(
     val width: Int
 )
 
-data class Resolution(
-    val height: Int,
-    val url: String,
-    val width: Int
-)
-
 data class Source(
     val height: Int,
     val url: String,
@@ -412,76 +385,22 @@ data class Source(
 )
 
 data class Variants(
-    val gif: Gif,
-    val mp4: Mp4,
-    val nsfw: Nsfw,
-    val obfuscated: Obfuscated
+    val gif: MediaResource,
+    val mp4: MediaResource,
+    val nsfw: MediaResource,
+    val obfuscated: MediaResource
 )
 
-data class Gif(
-    val resolutions: List<ResolutionX>,
-    val source: SourceX
+data class MediaResource(
+    val resolutions: List<Source>,
+    val source: Source
 )
 
-data class Mp4(
-    val resolutions: List<ResolutionXX>,
-    val source: SourceXX
+class SecureMediaEmbed(
 )
 
-data class Nsfw(
-    val resolutions: List<ResolutionXXX>,
-    val source: SourceXXX
+class MediaEmbed(
 )
 
-data class Obfuscated(
-    val resolutions: List<ResolutionXXXX>,
-    val source: SourceXXXX
-)
-
-data class ResolutionX(
-    val height: Int,
-    val url: String,
-    val width: Int
-)
-
-data class SourceX(
-    val height: Int,
-    val url: String,
-    val width: Int
-)
-
-data class ResolutionXX(
-    val height: Int,
-    val url: String,
-    val width: Int
-)
-
-data class SourceXX(
-    val height: Int,
-    val url: String,
-    val width: Int
-)
-
-data class ResolutionXXX(
-    val height: Int,
-    val url: String,
-    val width: Int
-)
-
-data class SourceXXX(
-    val height: Int,
-    val url: String,
-    val width: Int
-)
-
-data class ResolutionXXXX(
-    val height: Int,
-    val url: String,
-    val width: Int
-)
-
-data class SourceXXXX(
-    val height: Int,
-    val url: String,
-    val width: Int
+class Gildings(
 )
