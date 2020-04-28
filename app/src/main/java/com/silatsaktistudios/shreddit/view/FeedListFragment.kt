@@ -1,35 +1,43 @@
 package com.silatsaktistudios.shreddit.view
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.silatsaktistudios.shreddit.R
+import com.silatsaktistudios.shreddit.adapter.FeedListAdapter
+import com.silatsaktistudios.shreddit.model.ChildData
 import com.silatsaktistudios.shreddit.supers.ReactiveFragment
 import com.silatsaktistudios.shreddit.viewmodel.FeedListViewModel
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_feed_list.*
 
-class FeedListFragment : ReactiveFragment() {
+
+class FeedListFragment : ReactiveFragment(), SwipeRefreshLayout.OnRefreshListener {
 
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,
     savedInstanceState: Bundle?
   ): View? {
-    val view = inflater.inflate(R.layout.fragment_feed_list, container, false)
-
-    initSubs()
-    (viewModel as? FeedListViewModel)?.getRedditFeed()
-
-    return view
+    return inflater.inflate(R.layout.fragment_feed_list, container, false)
   }
 
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
+    reddit_feed_swipe_to_refresh.setOnRefreshListener(this)
+    (viewModel as? FeedListViewModel)?.getRedditFeed()
+  }
 
   override fun initSubs() {
     (viewModel as? FeedListViewModel)?.let { it ->
       disposables.addAll(
+
         it.uiState
           .subscribeOn(Schedulers.newThread())
           .observeOn(AndroidSchedulers.mainThread())
@@ -37,9 +45,14 @@ class FeedListFragment : ReactiveFragment() {
             { state ->
               when (state) {
                 FeedListViewModel.UiState.GETTING_LIST -> {
+                  reddit_feed_swipe_to_refresh.isRefreshing = true
                 }
-                FeedListViewModel.UiState.FAILED_TO_GET_LIST -> displayRetryListRetrievalDialog()
+                FeedListViewModel.UiState.FAILED_TO_GET_LIST -> {
+                  reddit_feed_swipe_to_refresh.isRefreshing = false
+                  displayRetryListRetrievalDialog()
+                }
                 FeedListViewModel.UiState.LIST_OBTAINED -> {
+                  reddit_feed_swipe_to_refresh.isRefreshing = false
                 }
                 else -> {
                 }
@@ -47,23 +60,32 @@ class FeedListFragment : ReactiveFragment() {
 
             },
             {
-              displayRetryListRetrievalDialog(it)
+              displayRetryListRetrievalDialog()
             }
           ),
+
         it.dataState
           .subscribeOn(Schedulers.newThread())
           .observeOn(AndroidSchedulers.mainThread())
           .subscribe(
             {
-              reddit_feed_list.adapter = FeedListAdapter(it.data.children)
+                reddit_feed_list.apply {
+                    adapter =
+                      FeedListAdapter(
+                        it.data.children,
+                        ::goToWebView
+                      )
+                    addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
+                }
             },
             {
-
+              displayRetryListRetrievalDialog()
             }
           )
       )
     }
   }
+
 
   override fun initViewModel() {
     viewModel = ViewModelProvider(
@@ -72,12 +94,26 @@ class FeedListFragment : ReactiveFragment() {
     ).get(FeedListViewModel::class.java)
   }
 
-  private fun displayRetryListRetrievalDialog(throwable: Throwable? = null) {
-    throwable?.let { }
+  override fun onRefresh() {
+    (viewModel as? FeedListViewModel)?.getRedditFeed()
   }
 
-//    companion object {
-//        @JvmStatic
-//        fun newInstance() = FeedListFragment()
-//    }
+  private fun goToWebView(data: ChildData) {
+    //TODO: go to webview and pass data
+  }
+
+  private fun displayRetryListRetrievalDialog() {
+    AlertDialog.Builder(requireContext())
+      .setTitle("Could Not Connect")
+      .setCancelable(false)
+      .setIcon(android.R.drawable.ic_dialog_alert)
+      .setNegativeButton("Quit") { _: DialogInterface, _: Int ->
+        requireActivity().finish()
+      }
+      .setPositiveButton("Retry") { _: DialogInterface, _: Int ->
+        onRefresh()
+      }
+      .create()
+      .show()
+  }
 }

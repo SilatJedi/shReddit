@@ -1,13 +1,10 @@
 package com.silatsaktistudios.shreddit.api
 
 import com.google.gson.GsonBuilder
-import com.silatsaktistudios.shreddit.model.RedditResponse
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.GET
 
 object Api {
 
@@ -47,7 +44,3 @@ object Api {
   }
 }
 
-interface RedditFeedService {
-  @GET("/.json")
-  fun getFeed(): Call<RedditResponse>
-}

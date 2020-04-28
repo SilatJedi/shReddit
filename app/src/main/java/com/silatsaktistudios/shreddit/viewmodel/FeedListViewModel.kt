@@ -12,6 +12,13 @@ class FeedListViewModel : ViewModel() {
 
   val uiState: ReplaySubject<UiState> = ReplaySubject.create()
   val dataState: ReplaySubject<RedditResponse> = ReplaySubject.create()
+  private var localDataState: RedditResponse? = null
+
+  init {
+    localDataState?.let {
+      dataState.onNext(it)
+    }
+  }
 
   fun getRedditFeed() {
     uiState.onNext(UiState.GETTING_LIST)
@@ -28,7 +35,8 @@ class FeedListViewModel : ViewModel() {
         ) {
           if (response.isSuccessful) {
             uiState.onNext(UiState.LIST_OBTAINED)
-            dataState.onNext(response.body())
+            localDataState = response.body()
+            dataState.onNext(localDataState)
           } else {
             uiState.onNext(UiState.FAILED_TO_GET_LIST)
           }
