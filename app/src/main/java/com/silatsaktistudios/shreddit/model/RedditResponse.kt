@@ -14,7 +14,7 @@ data class Data(
 )
 
 data class Child(
-    val childData: ChildData,
+    val data: ChildData,
     val kind: String
 )
 

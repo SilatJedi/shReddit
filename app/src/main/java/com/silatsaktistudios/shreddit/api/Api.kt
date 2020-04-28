@@ -11,7 +11,7 @@ import retrofit2.http.GET
 
 object Api {
 
-    val redditFeedService = createService(RedditFeedService::class.java)
+    val redditFeedService get() = createService(RedditFeedService::class.java)
 
     private const val BASE_URL = "https://www.reddit.com"
 
@@ -27,7 +27,7 @@ object Api {
     private var retrofit = builder.build()
 
     //function to instantiate any service
-    private fun <S> createService(serviceClass: Class<S>?, token: String? = null): S {
+    private fun <S> createService(serviceClass: Class<S>, token: String? = null): S {
         //Just in case we end up having to add oauth calls to any service
         if (token != null) {
             httpClient.interceptors().clear()

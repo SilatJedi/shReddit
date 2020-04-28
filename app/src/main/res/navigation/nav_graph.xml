@@ -3,7 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    tools:ignore="UnusedNavigation">
+    tools:ignore="UnusedNavigation"
+    app:startDestination="@id/feedListFragment">
 <!--    suppressed because we use androidx.fragment.app.FragmentContainerView instead of NavHostFragment-->
 
+    <fragment
+        android:id="@+id/feedListFragment"
+        android:name="com.silatsaktistudios.shreddit.view.FeedListFragment"
+        android:label="fragment_feed_list"
+        tools:layout="@layout/fragment_feed_list" />
 </navigation>
