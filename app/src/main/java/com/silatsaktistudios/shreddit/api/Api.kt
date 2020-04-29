@@ -10,7 +10,7 @@ object Api {
 
   val redditFeedService get() = createService(RedditFeedService::class.java)
 
-  private const val BASE_URL = "https://www.reddit.com"
+  const val BASE_URL = "https://www.reddit.com"
 
   private val httpClient = OkHttpClient.Builder()
   private val builder = Retrofit.Builder()

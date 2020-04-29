@@ -3,4 +3,7 @@
     <string name="list_item_image">list item image</string>
   <string name="ups_icon">ups icon</string>
   <string name="comments_icon">comments icon</string>
+
+  <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

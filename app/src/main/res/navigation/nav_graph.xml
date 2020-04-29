@@ -11,5 +11,17 @@
         android:id="@+id/feedListFragment"
         android:name="com.silatsaktistudios.shreddit.view.FeedListFragment"
         android:label="fragment_feed_list"
-        tools:layout="@layout/fragment_feed_list" />
+        tools:layout="@layout/fragment_feed_list" >
+        <action
+            android:id="@+id/action_feedListFragment_to_viewRedditPostFragment"
+            app:destination="@id/viewRedditPostFragment"
+            app:popUpTo="@id/feedListFragment">
+            <argument android:name="url" app:argType="string" app:nullable="false"/>
+        </action>
+    </fragment>
+    <fragment
+        android:id="@+id/viewRedditPostFragment"
+        android:name="com.silatsaktistudios.shreddit.view.ViewRedditPostFragment"
+        android:label="fragment_view_reddit_post"
+        tools:layout="@layout/fragment_view_reddit_post" />
 </navigation>
